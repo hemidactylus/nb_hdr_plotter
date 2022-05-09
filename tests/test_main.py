@@ -1,3 +1,7 @@
+"""
+These should be tests
+"""
+
 import unittest
 
 
@@ -7,6 +11,5 @@ class TestInterval(unittest.TestCase):
     """
 
     def test_scaffold(self):
-        self.assertTrue(True)
-
- 
+        """Trivial test"""
+        self.assertTrue(True)  # noqa: PLW1503
