@@ -8,7 +8,7 @@ A tool to plot HDR histogram data (and `histostats` output) from
 Install with
 
 ```
-TODO (install command)
+pip install nb-hdr-plotter
 ```
 
 Python 3.8+ is required.
