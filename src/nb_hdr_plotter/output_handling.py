@@ -26,7 +26,7 @@ except ModuleNotFoundError:
 
 
 def canCreateFile(fName, overwrite):
-  return overwrite or not os.path.isfile(fName)
+    return overwrite or not os.path.isfile(fName)
 
 
 def openFigure(w, h):
@@ -44,7 +44,7 @@ def saveFigure(figure, filename):
 def plotToFigure(pType, pData, hstep, metric, fName, unitName):
     # return True iff image creation succeeds
     if plt:
-        if pType == 'baseplot':
+        if pType == "baseplot":
             plot = openFigure(20, 14)
             xs, ys = pData[0]
             plt.bar(
@@ -53,48 +53,48 @@ def plotToFigure(pType, pData, hstep, metric, fName, unitName):
                 width=hstep,
             )
             #
-            average = sum([
-                _x * _y
-                for _x, _y in zip(xs, ys)
-            ]) / sum(ys)
+            average = sum([_x * _y for _x, _y in zip(xs, ys)]) / sum(ys)
             #
-            plt.xlabel('t [%s]' % unitName)
-            plt.ylabel('p(t) [1/%s]' % unitName)
+            plt.xlabel("t [%s]" % unitName)
+            plt.ylabel("p(t) [1/%s]" % unitName)
             plt.ylim((0, None))
-            plt.title('Distribution for "%s" (avg = %.2f %s)' % (
-                metric,
-                average,
-                unitName,
-            ))
+            plt.title(
+                'Distribution for "%s" (avg = %.2f %s)'
+                % (
+                    metric,
+                    average,
+                    unitName,
+                )
+            )
             saveFigure(plot, fName)
             return True
-        elif pType == 'stability':
+        elif pType == "stability":
             plot = openFigure(20, 14)
             curves = pData
-            colors = plt.cm.winter([i/(len(curves)-1) for i in range(len(curves))])
+            colors = plt.cm.winter([i / (len(curves) - 1) for i in range(len(curves))])
             for sli, (xs, ys) in enumerate(curves):
                 if len(xs) > 0:
                     plt.plot(
                         xs,
                         ys,
-                        '-',
+                        "-",
                         lw=3,
                         color=colors[sli],
-                        label='Slice %i' % sli,
+                        label="Slice %i" % sli,
                     )
-            plt.xlabel('t [%s]' % unitName)
-            plt.ylabel('p(t) [1/%s]' % unitName)
+            plt.xlabel("t [%s]" % unitName)
+            plt.ylabel("p(t) [1/%s]" % unitName)
             plt.ylim((0, None))
             plt.legend()
             plt.title('Stability analysis for "%s"' % metric)
             saveFigure(plot, fName)
             return True
-        elif pType == 'percentiles':
+        elif pType == "percentiles":
             plot = openFigure(14, 20)
             xs, ys = pData[0]
-            plt.plot(xs, ys, '-')
-            plt.xlabel('Percentile')
-            plt.ylabel('t [%s]' % unitName)
+            plt.plot(xs, ys, "-")
+            plt.xlabel("Percentile")
+            plt.ylabel("t [%s]" % unitName)
             xticks = [i for i in range(0, 100, 10)] + [95, 100]
 
             def _firstOrNone(lst):
@@ -118,38 +118,35 @@ def plotToFigure(pType, pData, hstep, metric, fName, unitName):
         else:
             raise ValueError('unknown plot type "%s"' % pType)
     else:
-        print('      ** matplotlib not available! **')
+        print("      ** matplotlib not available! **")
         return False
 
 
 def plotToDatafile(pType, pData, hstep, metric, fName):
     # return True iff datafile creation succeeds
-    if pType == 'baseplot':
-        with open(fName, 'w') as file:
-            file.write('\n'.join(
-                '%e\t%e' % (x, y)
-                for x, y in zip(*pData[0])
-            ))
+    if pType == "baseplot":
+        with open(fName, "w") as file:
+            file.write("\n".join("%e\t%e" % (x, y) for x, y in zip(*pData[0])))
         return True
-    elif pType == 'stability':
+    elif pType == "stability":
         # assume curves are padded to the same xs
         xs = pData[0][0]
         yts = zip(*[curve[1] for curve in pData])
-        with open(fName, 'w') as file:
-            file.write('\n'.join(
-                '%e\t%s' % (
-                    x,
-                    '\t'.join('%e' % y for y in yt),
+        with open(fName, "w") as file:
+            file.write(
+                "\n".join(
+                    "%e\t%s"
+                    % (
+                        x,
+                        "\t".join("%e" % y for y in yt),
+                    )
+                    for x, yt in zip(*(xs, yts))
                 )
-                for x, yt in zip(*(xs, yts))
-            ))
+            )
         return True
-    elif pType == 'percentiles':
-        with open(fName, 'w') as file:
-            file.write('\n'.join(
-                '%e\t%e' % (x, y)
-                for x, y in zip(*pData[0])
-            ))
+    elif pType == "percentiles":
+        with open(fName, "w") as file:
+            file.write("\n".join("%e\t%e" % (x, y) for x, y in zip(*pData[0])))
         return True
     else:
         raise ValueError('unknown plot type "%s"' % pType)
@@ -158,13 +155,13 @@ def plotToDatafile(pType, pData, hstep, metric, fName):
 def plotHistostats(xData, pValues, legend, metric, fName):
     # return True iff image creation succeeds
     lineStyles = [
-        (0,()),
+        (0, ()),
         (0, (1, 1)),
         (0, (5, 5)),
         (0, (5, 1)),
         (0, (3, 5, 1, 5)),
         (0, (3, 1, 1, 1)),
-        (0, (3, 1, 1, 1, 1, 1))
+        (0, (3, 1, 1, 1, 1, 1)),
     ]
     if plt:
         plot = openFigure(20, 14)
@@ -181,16 +178,16 @@ def plotHistostats(xData, pValues, legend, metric, fName):
                     xData,
                     pValues[curve],
                     linestyle=lineStyles[curveIndex % len(lineStyles)],
-                    label='%s (avg: %.2f ms)' % (curve, average),
+                    label="%s (avg: %.2f ms)" % (curve, average),
                 )
-        plt.yscale('log')
-        plt.xlabel('Time since start [ms]')
-        plt.ylabel('Percentile for metric [ms]')
+        plt.yscale("log")
+        plt.xlabel("Time since start [ms]")
+        plt.ylabel("Percentile for metric [ms]")
         plt.legend()
         plt.title(metric)
         #
         saveFigure(plot, fName)
         return True
     else:
-        print('      ** matplotlib not available! **')
+        print("      ** matplotlib not available! **")
         return False

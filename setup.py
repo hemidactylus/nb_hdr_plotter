@@ -39,5 +39,4 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
     ],
     keywords="nosqlbench, plotting, hdr",
-
 )

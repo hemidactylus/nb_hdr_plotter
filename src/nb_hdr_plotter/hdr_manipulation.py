@@ -31,7 +31,7 @@ VALUE_FACTOR = 1.0e6
 
 # Loader
 def loadHdrSlices(filename):
-    slices = []    
+    slices = []
     baseHistogram = None
     lReader = HistogramLogReader(filename, baseHistogram)
     while True:
@@ -91,10 +91,7 @@ def slicesMaxValue(slices, rawFlag):
 
 
 def slicesCountNonempty(slices):
-    return sum(
-        1 if sliceValueCount(sl) > 0 else 0
-        for sl in slices
-    )
+    return sum(1 if sliceValueCount(sl) > 0 else 0 for sl in slices)
 
 
 def slicesValueCount(slices):
@@ -108,7 +105,7 @@ def timestampToDate(tstamp):
 
 def valueUnitName(rawFlag):
     # used to properly label histo-value units returned from other functions
-    return 'RU' if rawFlag else 'ms'
+    return "RU" if rawFlag else "ms"
 
 
 def aggregateSlices(slices, sigFigures):
@@ -137,14 +134,16 @@ def normalizedDistribution(histogram, x_incr, max_percentile, rawFlag):
     x_incr_rw = x_incr * vf
     if sliceValueCount(histogram) > 0:
         cursor = histogram.get_linear_iterator(value_units_per_bucket=x_incr_rw)
-        xs0, ys0 = zip(*(
-            (
-                0.5 * (step.value_iterated_from + step.value_iterated_to),
-                step.count_added_in_this_iter_step,
+        xs0, ys0 = zip(
+            *(
+                (
+                    0.5 * (step.value_iterated_from + step.value_iterated_to),
+                    step.count_added_in_this_iter_step,
+                )
+                for step in cursor
+                if step.percentile <= max_percentile
             )
-            for step in cursor
-            if step.percentile <= max_percentile
-        ))
+        )
         #
         xs = [x / vf for x in xs0]
         # integral must be == 1 for ease of comparisons:
