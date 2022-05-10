@@ -1,1 +1,15 @@
-This is the first release.
+CHANGES
+=======
+
+0.1.1
+-----
+
+* Example invocations in the README quickstart made more illustrative.
+* Summary of all command-line options on README.
+* Installation with pip given in the README.
+* Correct sample data (for testing) replaced in the repo, along with sample result plots/datafiles.
+
+0.1.0
+-----
+
+* This is the first release.

@@ -5,7 +5,7 @@ here = pathlib.Path(__file__).parent.resolve()
 
 setup(
     name="nb_hdr_plotter",
-    version="0.1.0",
+    version="0.1.1",
     author="Stefano Lottini",
     author_email="stefano.lottini@datastax.com",
     package_dir={"": "src"},
