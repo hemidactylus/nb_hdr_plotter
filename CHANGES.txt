@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.1.2
+-----
+
+* Add parameters '--threshold' and '--plotsize' to command-line options.
+
 0.1.1
 -----
 

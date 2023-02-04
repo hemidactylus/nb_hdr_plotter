@@ -51,8 +51,8 @@ from nb_hdr_plotter.output_handling import (
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 SIGNIFICANT_FIGURES = 3
 # this is set pretty low, for the plots to focus on the 'interesting' part:
-MAX_PERCENTILE_REACHED = 97.5
-PLOT_POINTS_COUNT = 500
+DEFAULT_MAX_PERCENTILE_REACHED = 97.5
+DEFAULT_PLOT_POINTS_COUNT = 500
 
 
 def main():
@@ -72,6 +72,24 @@ def main():
         metavar="METRICTAG",
         nargs=1,
         help="Work on the specified metric tag (interactive choice if not provided)",
+    )
+    aParserGroup.add_argument(
+        "-t",
+        "--threshold",
+        action="store",
+        type=float,
+        dest="max_percentile",
+        default=DEFAULT_MAX_PERCENTILE_REACHED,
+        help="Threshold (percentile between 0 and 1) at which to stop collecting distributions. Defaults to %s." % str(DEFAULT_MAX_PERCENTILE_REACHED),
+    )
+    aParserGroup.add_argument(
+        "-z",
+        "--plotsize",
+        action="store",
+        type=int,
+        dest="plot_points_count",
+        default=DEFAULT_PLOT_POINTS_COUNT,
+        help="Number of points in the resulting curve. Defaults to %s." % str(DEFAULT_PLOT_POINTS_COUNT),
     )
     aParserGroup.add_argument(
         "-b",
@@ -241,9 +259,9 @@ def main():
     # common assessments
     fullHistogram = aggregateSlices(slicesByTag[metricName], SIGNIFICANT_FIGURES)
     maxX = histogramGetValueAtPercentile(
-        fullHistogram, MAX_PERCENTILE_REACHED, rawFlag=args.raw
+        fullHistogram, args.max_percentile, rawFlag=args.raw
     )
-    xStep = maxX / PLOT_POINTS_COUNT
+    xStep = maxX / args.plot_points_count
 
     # ordinary distribution of the target metric ("baseplot")
     if args.baseplot:
@@ -251,7 +269,7 @@ def main():
         xs, ys = normalizedDistribution(
             fullHistogram,
             xStep,
-            MAX_PERCENTILE_REACHED,
+            args.max_percentile,
             rawFlag=args.raw,
         )
         plotDataMap["baseplot"] = [(xs, ys)]
@@ -265,7 +283,7 @@ def main():
                 normalizedDistribution(
                     sl,
                     xStep,
-                    MAX_PERCENTILE_REACHED,
+                    args.max_percentile,
                     rawFlag=args.raw,
                 )
                 for sl in slicesByTag[metricName]
@@ -293,7 +311,7 @@ def main():
             bxs, bys = normalizedDistribution(
                 fullHistogram,
                 xStep,
-                MAX_PERCENTILE_REACHED,
+                args.max_percentile,
                 rawFlag=args.raw,
             )
         #
